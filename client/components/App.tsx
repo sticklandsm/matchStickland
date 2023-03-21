@@ -1,19 +1,41 @@
-import SegmentTop from './SegmentTop'
+import { useEffect, useState } from 'react'
+import { MatchStickWord } from './MatchStickWord'
 
-function App() {
+function getRandomInt(max: number) {
+  return Math.floor(Math.random() * max)
+}
+
+export function App() {
+  const [currentWord, changeWord] = useState({ word: '', definition: '' })
+
+  async function getWord() {
+    const data = await fetch('./data/SimpleFourDef.json', {
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+    })
+
+    const allWords = await data.json()
+    const length = Object.keys(allWords).length
+    const ranNumber = getRandomInt(length - 1)
+
+    const wordObj = {
+      word: Object.keys(allWords)[ranNumber],
+      definition: String(Object.values(allWords)[ranNumber]),
+    }
+
+    changeWord(() => wordObj)
+  }
+
+  useEffect(() => {
+    getWord()
+  }, [])
+
   return (
     <div>
       <h1>App</h1>
-
-      <div className="segmented-digit">
-        <SegmentTop />
-        <div className="segment top-left"></div>
-        <div className="segment top-right"></div>
-        <div className="segment middle"></div>
-        <div className="segment bottom-left"></div>
-        <div className="segment bottom-right"></div>
-        <div className="segment bottom"></div>
-      </div>
+      <MatchStickWord wordObj={currentWord} />
     </div>
   )
 }

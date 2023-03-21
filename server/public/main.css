@@ -6,14 +6,21 @@ body {
   background: #fff;
   position: relative;
 }
+
+.letters {
+  top: 50%;
+  left: 100%;
+}
 .segmented-digit {
   transform: scale(5);
   display: inline-block;
   width: 30px;
   height: 50px;
-  left: 200px;
   top: 200px;
-  position: fixed;
+
+  position: absolute;
+  align-items: center;
+  justify-content: center;
 }
 
 .segment {
@@ -23,7 +30,6 @@ body {
 }
 
 .top {
-  outline: none;
   top: 0;
   left: 3px;
   width: 25px;
@@ -54,8 +60,8 @@ body {
 
 .middle {
   top: 23px;
-  left: 3px;
-  width: 24px;
+  left: 4px;
+  width: 22px;
   height: 5px;
   background-image: url('/images/matchSide.svg');
   background-position: center;
@@ -92,10 +98,13 @@ body {
   background-size: cover;
   display: inline-table;
 }
-/* img.middleMatch {
-  transform: rotate(90deg);
 
-  max-height: 500%;
-  justify-content: center;
-  align-items: center;
-} */
+.definition {
+  position: absolute;
+  top: 150%;
+  left: 30%;
+  width: 1100px;
+  height: 100px;
+
+  text-align: center;
+}
