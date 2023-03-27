@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { getNumberOfMatchesWord } from '../functions'
 import { MatchStickWord } from './MatchStickWord'
 
 function getRandomInt(max: number) {
@@ -7,6 +8,7 @@ function getRandomInt(max: number) {
 
 export function App() {
   const [currentWord, changeWord] = useState({ word: '', definition: '' })
+  const [matchesLeft, changeMatchesLeft] = useState(0)
 
   async function getWord() {
     const data = await fetch('./data/SimpleFourDef.json', {
@@ -26,6 +28,7 @@ export function App() {
     }
 
     changeWord(() => wordObj)
+    changeMatchesLeft(() => getNumberOfMatchesWord(wordObj.word))
   }
 
   useEffect(() => {
@@ -35,7 +38,13 @@ export function App() {
   return (
     <div>
       <h1>App</h1>
-      <MatchStickWord wordObj={currentWord} />
+      <MatchStickWord
+        wordObj={currentWord}
+        changeMatchesLeft={changeMatchesLeft}
+        matchesLeft={matchesLeft}
+      />
+      <h2>{currentWord.word}</h2>
+      <h3>Guesses left: {matchesLeft}</h3>
     </div>
   )
 }
