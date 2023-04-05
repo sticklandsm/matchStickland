@@ -1,11 +1,43 @@
+@font-face {
+  font-family: RockStar;
+  src: url('./fonts/RockSlayers-BW6Lw.otf');
+}
+
 body {
   background-color: #faf8f1;
-  color: #0a1520;
-  font-family: 'Poppins', sans-serif;
+  color: #650000;
+
   margin: 48px;
   background: #fff;
-
+  font-family: RockStar;
   height: 100%;
+}
+
+h1 {
+  font-size: 30pt;
+  font-family: RockStar;
+  display: flex;
+  justify-content: center;
+  top: 10pt;
+}
+
+.hint {
+  max-height: fit-content;
+  font-family: RockStar;
+  display: inline-table;
+  position: absolute;
+  bottom: 1%;
+  left: 125px;
+  font-size: 1.5vw;
+}
+.hintButton {
+  scale: 1.2;
+  left: 2px;
+  display: inline-table;
+  position: absolute;
+  bottom: 1%;
+  left: 20px;
+  width: 80px;
 }
 
 .letters {
@@ -13,13 +45,12 @@ body {
   left: 100%;
 }
 .segmented-digit {
-  transform: scale(5);
-  display: inline-block;
+  transform: scale(6);
   width: 30px;
   height: 50px;
-  top: 200px;
-
-  position: absolute;
+  top: 250px;
+  right: 400px;
+  position: fixed;
 }
 
 .segment {
@@ -91,22 +122,26 @@ body {
   left: 3px;
   width: 25px;
   height: 5px;
-
   background-image: url('/images/matchSide.svg');
   background-position: center;
   background-size: cover;
   display: inline-table;
 }
+.correct {
+  filter: grayscale(60%);
+  border-radius: 20%;
+  scale: 1;
+}
 
 .submitButton {
-  bottom: -5%;
+  top: 430px;
   left: 3px;
   display: inline-table;
   position: absolute;
 }
 
 .wrongOrRight {
-  bottom: 50%;
+  top: 460px;
   left: 3px;
   display: inline-table;
   position: absolute;
@@ -118,6 +153,5 @@ body {
   left: 30%;
   width: 1100px;
   height: 100px;
-
   text-align: center;
 }

@@ -38,12 +38,11 @@ export function getNumberOfMatchesLetter(letter: string): number {
 }
 
 export function getNumberOfMatchesWord(word: string) {
-  console.log('inside getnumber function: ', word)
   let matches = 0
   word
     .split('')
     .forEach((letter) => (matches += getNumberOfMatchesLetter(letter)))
-  console.log('Matches ', matches)
+
   return matches
 }
 
@@ -86,5 +85,44 @@ export function getLetterFromConfig(config: number) {
 
     default:
       return
+  }
+}
+
+export function getConfigFromLetter(letter: string) {
+  switch (letter.toUpperCase()) {
+    case 'A':
+      return 1111011
+    case 'B':
+      return 1111111
+    case 'C':
+      return 101101
+    case 'E':
+      return 101111
+    case 'F':
+      return 101011
+    case 'G':
+      return 1101111
+    case 'H':
+      return 1111010
+    case 'I':
+      return 101000
+    case 'J':
+      return 1110100
+    case 'L':
+      return 101100
+    case 'O':
+      return 1111101
+    case 'P':
+      return 111011
+    case 'S':
+      return 1001111
+    case 'U':
+      return 1111100
+    case 'Y':
+      return 1011110
+    case 'Z':
+      return 110111
+    default:
+      return undefined
   }
 }

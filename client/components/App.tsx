@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { getNumberOfMatchesWord } from '../functions'
+import { getWordInfo, postGpt } from './apiClient'
 import { MatchStickWord } from './MatchStickWord'
 
 function getRandomInt(max: number) {
@@ -7,10 +8,20 @@ function getRandomInt(max: number) {
 }
 
 export function App() {
+  //This is the actual word that is loaded from the JSON
   const [currentWord, changeWord] = useState({ word: '', definition: '' })
+  //This is the amount of match sticks you have left to use.
   const [matchesLeft, changeMatchesLeft] = useState(0)
+  const [wordDef, changeWordDef] = useState({})
+  const [didTheyWin, changeWin] = useState([false, false, false, false])
+  const [toggle, changeToggle] = useState(true)
+  const [hint, changeHint] = useState('')
 
+  const [amountOfSubmits, updateSubmits] = useState(0)
+
+  //function for fetching the word from the Json.
   async function getWord() {
+    //fetch the data
     const data = await fetch('./data/SimpleFourDef.json', {
       headers: {
         'Content-Type': 'application/json',
@@ -18,17 +29,29 @@ export function App() {
       },
     })
 
+    //get random number and use it to make a word obj
     const allWords = await data.json()
     const length = Object.keys(allWords).length
     const ranNumber = getRandomInt(length - 1)
-
     const wordObj = {
       word: Object.keys(allWords)[ranNumber],
       definition: String(Object.values(allWords)[ranNumber]),
     }
 
+    //API stuff
+    const newWordDef = await getWordInfo(wordObj.word)
+
+    //change the word to be the word object, change matchsticks when used
     changeWord(() => wordObj)
     changeMatchesLeft(() => getNumberOfMatchesWord(wordObj.word))
+    changeWordDef(() => newWordDef)
+    console.log('Current Word: ', newWordDef[0].word)
+  }
+  
+  async function clickHandler(evt: React.MouseEvent<HTMLButtonElement>) {
+    changeToggle(() => false)
+    const newHint = await postGpt(currentWord.word)
+    changeHint(() => newHint.choices[0].message.content)
   }
 
   useEffect(() => {
@@ -37,14 +60,26 @@ export function App() {
 
   return (
     <div>
-      <h1>App</h1>
-      <MatchStickWord
-        wordObj={currentWord}
-        changeMatchesLeft={changeMatchesLeft}
-        matchesLeft={matchesLeft}
-      />
-      <h2>{currentWord.word}</h2>
-      <h3>Guesses left: {matchesLeft}</h3>
+      <h1>Match Stick Land!</h1>
+      <div>
+        <MatchStickWord
+          updateSubmits={updateSubmits}
+          wordObj={currentWord}
+          changeMatchesLeft={changeMatchesLeft}
+          matchesLeft={matchesLeft}
+        />
+      </div>
+
+      {/* <h2>{currentWord.word}</h2> */}
+      <h4>Matches left: {matchesLeft}</h4>
+      <div>Turns: {amountOfSubmits}</div>
+      <div>
+        <button className="hintButton" onClick={clickHandler}>
+          Get a Hint
+        </button>
+
+        <label className="hint">{hint}</label>
+      </div>
     </div>
   )
 }

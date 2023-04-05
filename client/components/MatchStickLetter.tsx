@@ -1,100 +1,116 @@
-import { useState } from 'react'
+import { forwardRef, useEffect, useState } from 'react'
 import Segment from './Segments/Segment'
-import { getLetterFromConfig } from '../functions'
+import { getLetterFromConfig, getConfigFromLetter } from '../functions'
 
 interface Props {
   letter: string
   style: { left: string }
-  addToMatchedWord: React.Dispatch<React.SetStateAction<string>>
   letterNumber: number
   changeMatchesLeft: React.Dispatch<React.SetStateAction<number>>
   matchesLeft: number
+  updateSubmits: React.Dispatch<React.SetStateAction<number>>
+  index: number
+  changeArrayOfWins: React.Dispatch<React.SetStateAction<boolean[]>>
+  configFromParent: number
 }
+
+export interface MatchStickLetterRef {
+  submitHandler: () => void
+}
+
+const emptyClasses = [
+  'bottom-right',
+  'bottom-left',
+  'top-right',
+  'top-left',
+  'bottom',
+  'middle',
+  'top',
+]
 
 export function MatchStickLetter(props: Props) {
   const [matchStickConfig, changeConfig] = useState(0)
   const [wrongOrRight, checkIfWrongOrRight] = useState('')
+  const [correctMatches, changeCorrectMatches] = useState([...emptyClasses])
 
-  function submitHandler(event: React.MouseEvent<HTMLButtonElement>) {
-    event.preventDefault
+  function submitHandler() {
+    //increase the submits
+    props.updateSubmits((submits) => submits + 1)
+    if (props.matchesLeft === 12) {
+      //checkes if any of the individual matches are in the right place and changes their class name as such
+      const newCorrectMatches = emptyClasses.map((match, index) => {
+        const configForInput = String(matchStickConfig)
+          .padStart(7, '0')
+          .split('')
+        const configForRealAnswer = String(
+          getConfigFromLetter(props.letter.toUpperCase())
+        )
+          .padStart(7, '0')
+          .split('')
+        if (
+          configForInput[index] === configForRealAnswer[index] &&
+          configForInput[index] === '1'
+        ) {
+          return match + ' correct'
+        }
+        return match
+      })
+      changeCorrectMatches(() => newCorrectMatches)
+    }
 
     if (getLetterFromConfig(matchStickConfig) === props.letter.toUpperCase()) {
-      props.addToMatchedWord((word) => {
-        const newWord = word.slice().split('')
-        newWord[props.letterNumber] = props.letter
-        console.log(newWord)
-        return newWord.join('')
-      })
       checkIfWrongOrRight(() => 'Letter Correct!')
+      props.changeArrayOfWins((wins) => {
+        const newWins = [...wins]
+        newWins[props.index] = true
+        return newWins
+      })
     } else {
-      console.log('No match')
       checkIfWrongOrRight(() => 'Letter Wrong!')
     }
+
+    // Use the updated state values
+    props.changeMatchesLeft((points) => points)
+    changeConfig((config) => config)
   }
+
+  //submit ends
+
+  useEffect(() => {
+    submitHandler()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [matchStickConfig])
 
   return (
     <>
       <div className="letters">
-        <div className="segmented-digit" style={props.style}>
-          <Segment
-            changeConfig={changeConfig}
-            changeMatchesLeft={props.changeMatchesLeft}
-            segmentSection="top"
-            changeConfigNum={1}
-            matchesLeft={props.matchesLeft}
-          />
-          <Segment
-            changeConfig={changeConfig}
-            changeMatchesLeft={props.changeMatchesLeft}
-            segmentSection="top-left"
-            changeConfigNum={1000}
-            matchesLeft={props.matchesLeft}
-          />
-          <Segment
-            changeConfig={changeConfig}
-            changeMatchesLeft={props.changeMatchesLeft}
-            segmentSection="top-right"
-            changeConfigNum={10000}
-            matchesLeft={props.matchesLeft}
-          />
-          <Segment
-            changeConfig={changeConfig}
-            changeMatchesLeft={props.changeMatchesLeft}
-            segmentSection="middle"
-            changeConfigNum={10}
-            matchesLeft={props.matchesLeft}
-          />
-          <Segment
-            changeConfig={changeConfig}
-            changeMatchesLeft={props.changeMatchesLeft}
-            segmentSection="bottom-left"
-            changeConfigNum={100000}
-            matchesLeft={props.matchesLeft}
-          />
-          <Segment
-            changeConfig={changeConfig}
-            changeMatchesLeft={props.changeMatchesLeft}
-            segmentSection="bottom-right"
-            changeConfigNum={1000000}
-            matchesLeft={props.matchesLeft}
-          />
-          <Segment
-            changeConfig={changeConfig}
-            changeMatchesLeft={props.changeMatchesLeft}
-            segmentSection="bottom"
-            changeConfigNum={100}
-            matchesLeft={props.matchesLeft}
-          />
+        <div className={'segmented-digit'} style={props.style}>
+          {correctMatches.map((match, index) => {
+            const configNumber = 10 ** (6 - index)
+            return (
+              <Segment
+                key={index}
+                changeConfig={changeConfig}
+                changeMatchesLeft={props.changeMatchesLeft}
+                segmentSection={match}
+                configNumberForEachSegment={configNumber}
+                matchesLeft={props.matchesLeft}
+                correctMatches={correctMatches}
+              />
+            )
+          })}
         </div>
         <div>
-          <div></div>
-          <button
-            onClick={submitHandler}
-            className="submitButton"
-            style={props.style}
-          >
-            Button
-          </button>
+          {/* <div className="container">
+            <button
+              onClick={submitHandler}
+              className="submitButton"
+              style={submitStyle}
+            >
+              Submit
+            </button>
+          </div> */}
+
           <div className="wrongOrRight" style={props.style}>
             {wrongOrRight}
           </div>
