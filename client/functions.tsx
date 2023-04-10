@@ -1,3 +1,6 @@
+
+
+
 export function getNumberOfMatchesLetter(letter: string): number {
   switch (letter.toUpperCase()) {
     case 'A':

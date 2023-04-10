@@ -19,7 +19,7 @@ export function MatchStickWord(props: Props) {
     false,
     false,
   ])
-  const [victory, changeVictory] = useState(0)
+  const [victoryStatus, changeVictory] = useState('')
 
   splitWord.forEach((letter, index) => {
     const letterConfig = Number(getConfigFromLetter(letter))
@@ -30,13 +30,13 @@ export function MatchStickWord(props: Props) {
   console.log('new Wins assigned to array: ', arrayofWins)
 
   function checkAnswer(evt: React.FormEvent<HTMLButtonElement>) {
+    props.updateSubmits((submits) => submits + 1)
     evt.preventDefault
     if (!arrayofWins.includes(false)) {
-      changeVictory(() => 1)
+      changeVictory(() => 'Correct!')
       console.log('You Win')
-    }
-    else{
-      changeVictory(() => 2)
+    } else {
+      changeVictory(() => 'Try Again')
     }
   }
   return (
@@ -47,21 +47,20 @@ export function MatchStickWord(props: Props) {
           return (
             <div key={index}>
               <MatchStickLetter
-                updateSubmits={props.updateSubmits}
                 letter={letter}
                 style={style}
-                letterNumber={index}
                 changeMatchesLeft={props.changeMatchesLeft}
                 matchesLeft={props.matchesLeft}
                 index={index}
                 changeArrayOfWins={changeArrayOfWins}
                 configFromParent={arrayOfConfigs.current[index]}
+                victoryStatus={victoryStatus}
               />
             </div>
           )
         })}
         <button onClick={checkAnswer}>Submit</button>
-        {victory ? <h3> You Win! </h3> : <h3>Kepp Trying</h3>}
+        <div>{victoryStatus}</div>
       </div>
       {/* {console.log('definition ', props.wordObj.definition)} */}
       {/* <div className="definition">{props.wordObj.definition}</div> */}

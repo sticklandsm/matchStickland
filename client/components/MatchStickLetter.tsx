@@ -5,13 +5,12 @@ import { getLetterFromConfig, getConfigFromLetter } from '../functions'
 interface Props {
   letter: string
   style: { left: string }
-  letterNumber: number
   changeMatchesLeft: React.Dispatch<React.SetStateAction<number>>
   matchesLeft: number
-  updateSubmits: React.Dispatch<React.SetStateAction<number>>
   index: number
   changeArrayOfWins: React.Dispatch<React.SetStateAction<boolean[]>>
   configFromParent: number
+  victoryStatus: string
 }
 
 export interface MatchStickLetterRef {
@@ -35,8 +34,8 @@ export function MatchStickLetter(props: Props) {
 
   function submitHandler() {
     //increase the submits
-    props.updateSubmits((submits) => submits + 1)
-    if (props.matchesLeft === 12) {
+
+    if (props.victoryStatus === 'Try Again') {
       //checkes if any of the individual matches are in the right place and changes their class name as such
       const newCorrectMatches = emptyClasses.map((match, index) => {
         const configForInput = String(matchStickConfig)
@@ -78,8 +77,8 @@ export function MatchStickLetter(props: Props) {
 
   useEffect(() => {
     submitHandler()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [matchStickConfig])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [matchStickConfig, props.victoryStatus])
 
   return (
     <>
