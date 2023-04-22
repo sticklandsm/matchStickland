@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import Segment from './Segments/Segment'
 import { getLetterFromConfig, getConfigFromLetter } from '../functions'
 
@@ -11,6 +11,7 @@ interface Props {
   changeArrayOfWins: React.Dispatch<React.SetStateAction<boolean[]>>
   configFromParent: number
   victoryStatus: string
+  changeVictory: React.Dispatch<React.SetStateAction<string>>
 }
 
 export interface MatchStickLetterRef {
@@ -29,14 +30,13 @@ const emptyClasses = [
 
 export function MatchStickLetter(props: Props) {
   const [matchStickConfig, changeConfig] = useState(0)
-  const [wrongOrRight, checkIfWrongOrRight] = useState('')
   const [correctMatches, changeCorrectMatches] = useState([...emptyClasses])
 
   function submitHandler() {
     //increase the submits
 
     if (props.victoryStatus === 'Try Again') {
-      //checkes if any of the individual matches are in the right place and changes their class name as such
+      //checkes if any of the individual matches are in the right place and changes their class name as such in order to make them gray 
       const newCorrectMatches = emptyClasses.map((match, index) => {
         const configForInput = String(matchStickConfig)
           .padStart(7, '0')
@@ -55,17 +55,15 @@ export function MatchStickLetter(props: Props) {
         return match
       })
       changeCorrectMatches(() => newCorrectMatches)
+      props.changeVictory(() => 'Try Again!')
     }
 
     if (getLetterFromConfig(matchStickConfig) === props.letter.toUpperCase()) {
-      checkIfWrongOrRight(() => 'Letter Correct!')
       props.changeArrayOfWins((wins) => {
         const newWins = [...wins]
         newWins[props.index] = true
         return newWins
       })
-    } else {
-      checkIfWrongOrRight(() => 'Letter Wrong!')
     }
 
     // Use the updated state values
@@ -109,10 +107,6 @@ export function MatchStickLetter(props: Props) {
               Submit
             </button>
           </div> */}
-
-          <div className="wrongOrRight" style={props.style}>
-            {wrongOrRight}
-          </div>
         </div>
       </div>
     </>

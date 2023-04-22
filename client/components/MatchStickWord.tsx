@@ -1,6 +1,9 @@
 import { useRef, useState } from 'react'
 import MatchStickLetter from './MatchStickLetter'
 import { getConfigFromLetter } from '../functions'
+import { Navigate } from 'react-router-dom'
+import * as React from 'react'
+import { Victory } from './Victory'
 
 interface Props {
   wordObj: { word: string; definition: string }
@@ -10,7 +13,8 @@ interface Props {
 }
 
 export function MatchStickWord(props: Props) {
-  // console.log(props.wordObj)
+  const [victoryStatus, changeVictory] = useState('')
+  const [victoryCelebration, changeCelebration] = useState(<></>)
   const splitWord = props.wordObj.word.split('')
   const arrayOfConfigs = useRef([] as number[])
   const [arrayofWins, changeArrayOfWins] = useState([
@@ -19,7 +23,7 @@ export function MatchStickWord(props: Props) {
     false,
     false,
   ])
-  const [victoryStatus, changeVictory] = useState('')
+  const wordLength = props.wordObj.word.length
 
   splitWord.forEach((letter, index) => {
     const letterConfig = Number(getConfigFromLetter(letter))
@@ -27,7 +31,6 @@ export function MatchStickWord(props: Props) {
     configs[index] = letterConfig
     arrayOfConfigs.current = configs
   })
-  console.log('new Wins assigned to array: ', arrayofWins)
 
   function checkAnswer(evt: React.FormEvent<HTMLButtonElement>) {
     props.updateSubmits((submits) => submits + 1)
@@ -35,15 +38,20 @@ export function MatchStickWord(props: Props) {
     if (!arrayofWins.includes(false)) {
       changeVictory(() => 'Correct!')
       console.log('You Win')
+      changeCelebration(() => <Victory changeCelebration={changeCelebration} />)
     } else {
       changeVictory(() => 'Try Again')
     }
   }
+
   return (
     <>
       <div>
+        {victoryCelebration}
         {splitWord.map((letter, index) => {
-          const style = { left: `${(index + 1) * 20}%` }
+          const style = {
+            left: `${(index + wordLength / 18) * (100 / wordLength)}%`,
+          }
           return (
             <div key={index}>
               <MatchStickLetter
@@ -55,6 +63,7 @@ export function MatchStickWord(props: Props) {
                 changeArrayOfWins={changeArrayOfWins}
                 configFromParent={arrayOfConfigs.current[index]}
                 victoryStatus={victoryStatus}
+                changeVictory={changeVictory}
               />
             </div>
           )
@@ -62,8 +71,6 @@ export function MatchStickWord(props: Props) {
         <button onClick={checkAnswer}>Submit</button>
         <div>{victoryStatus}</div>
       </div>
-      {/* {console.log('definition ', props.wordObj.definition)} */}
-      {/* <div className="definition">{props.wordObj.definition}</div> */}
     </>
   )
 }

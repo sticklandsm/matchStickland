@@ -10,7 +10,6 @@ const router = express.Router()
 
 router.post('/', async (req, res) => {
   try {
-    console.log('req', req.body)
     const response = await request
       .post('https://api.openai.com/v1/chat/completions')
       .set('Content-Type', 'application/json')
@@ -20,7 +19,7 @@ router.post('/', async (req, res) => {
         messages: [
           {
             role: 'user',
-            content: `Can you please provide a hint on the word ${req.body.name} without telling me the word?`,
+            content: `Would you consider ${req.body.name} a common word? Yes or No?`,
           },
         ],
       })
@@ -28,7 +27,7 @@ router.post('/', async (req, res) => {
     const chatGptData = response.body
     res.json(chatGptData)
   } catch (error) {
-    console.log(error)
+    console.error(error)
   }
 })
 

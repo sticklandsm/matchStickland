@@ -13,6 +13,15 @@ body {
   height: 100%;
 }
 
+.horse {
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
 h1 {
   font-size: 30pt;
   font-family: RockStar;
@@ -40,16 +49,11 @@ h1 {
   width: 80px;
 }
 
-.letters {
-  top: 50%;
-  left: 100%;
-}
 .segmented-digit {
   transform: scale(6);
   width: 30px;
   height: 50px;
-  top: 250px;
-  right: 400px;
+  top: 350px;
   position: fixed;
 }
 
