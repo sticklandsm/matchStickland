@@ -75,7 +75,8 @@
   "dependencies": {
     "dotenv": "^16.0.3",
     "express": "^4.17.2",
-    "superagent": "^8.0.9"
+    "superagent": "^8.0.9",
+    "ts-node": "^10.9.1"
   },
   "prettier": {
     "semi": false,
