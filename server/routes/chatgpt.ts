@@ -19,7 +19,7 @@ router.post('/', async (req, res) => {
         messages: [
           {
             role: 'user',
-            content: `Would you consider ${req.body.name} a common word? Yes or No?`,
+            content: `Can you please provide a hint for guessing the word "${req.body.name}" without saying the word?`,
           },
         ],
       })
